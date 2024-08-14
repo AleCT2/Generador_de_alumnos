@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Script SQL</title>
+</head>
+
+<script>
+    const apellidosAlemanes = [
+    "Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann",
+    "Schäfer", "Koch", "Bauer", "Richter", "Klein", "Wolf", "Schröder", "Neumann", "Braun", "Werner",
+    "Schwarz", "Zimmermann", "Schmitt", "Hartmann", "Krüger", "Schmid", "Krause", "Vogel", "Weiß", "Jung",
+    "Hahn", "Schubert", "Friedrich", "Keller", "Günther", "Frank", "Berger", "Winkler", "Roth", "Beck",
+    "Lorenz", "Baumann", "Franke", "Albrecht", "Schuster", "Simon", "Ludwig", "Böhm", "Schäfer", "Winter",
+    "Kraus", "Martin", "Schütz", "Lang", "Fuchs", "Otto", "Peters", "Hansen", "Mayer", "Herrmann",
+    "Walter", "König", "Möller", "Kaiser", "Huber", "Bergmann", "Lehmann", "Riedel", "Scholz", "Bayer",
+    "Bauer", "Brandt", "Seidel", "Schilling", "Lenz", "Kaufmann", "Kiefer", "Ziegler", "Reinhardt", "Arnold",
+    "Graf", "Krebs", "Berndt", "Hoffman", "Reuter", "Henkel", "Schwarz", "Götz", "Schwarz", "Schumacher",
+    "Kraft", "Witt", "Weber", "Römer", "Michel", "Meier", "Maurer", "Heinrich", "Schlüter", "Engel", "Huber"
+];
+
+
+    const apellidosArgentinos = [
+    "González", "Rodríguez", "Gómez", "Fernández", "López", "Díaz", "Martínez", "Pérez", "García", "Sánchez",
+    "Romero", "Sosa", "Álvarez", "Torres", "Ruiz", "Ramírez", "Flores", "Acosta", "Benítez", "Medina",
+    "Suárez", "Herrera", "Aguirre", "Pereyra", "Gutiérrez", "Giménez", "Molina", "Silva", "Castro", "Rojas",
+    "Ortiz", "Núñez", "Luna", "Juárez", "Cabrera", "Ríos", "Morales", "Domínguez", "Moreno", "Peralta",
+    "Carrizo", "Méndez", "Ponce", "Rivero", "Villalba", "Cardozo", "Vega", "Vera", "Cáceres", "Maldonado",
+    "Ávila", "Ojeda", "Ferreyra", "Navarro", "Bustamante", "Ledesma", "Escobar", "Mansilla", "Maidana", "Cruz",
+    "Figueroa", "Coronel", "Correa", "Quiroga", "Arias", "Leiva", "Franco", "Godoy", "Vázquez", "Ibarra",
+    "Soria", "Castillo", "Vargas", "Campos", "Montenegro", "Cabrera", "Galarza", "Sánchez", "Peña", "Barrios",
+    "Zárate", "Lescano", "López", "Ramos", "Acosta", "Valdez", "Muñoz", "Medina", "Quiñones", "Escudero",
+    "Palacios", "Ortiz", "Jiménez", "Roldán", "Aguirre", "Farias", "Rosales", "Toledo", "González", "Montoya"
+];
+
+    const apellidosTailandeses = [
+    "Sukhum", "Wong", "Jintana", "Chaiyathip", "Pradchaphet", "Thongsuk", "Srisai", "Boonyasith", "Nopphakhun", "Supasawat",
+    "Rattanakosin", "Suwannarat", "Chaisai", "Wattanachai", "Thongchai", "Kongsawat", "Panyawat", "Suwannaphong", "Sirisawat", "Prachuab",
+    "Phromsawat", "Nontakorn", "Panyathip", "Phongchana", "Somchai", "Phuwanat", "Thammarat", "Chaiwat", "Siripong", "Thanakorn",
+    "Somsak", "Yuwadee", "Kittisak", "Patcharawat", "Wongchai", "Kongrit", "Thongkum", "Karnchana", "Phothisat", "Sriwong",
+    "Sombat", "Watanachai", "Chaiyasit", "Sirikul", "Rattanapong", "Suwannachai", "Bunnag", "Nopparat", "Sukhumvit", "Mekhala",
+    "Thammasak", "Chomphu", "Thanawat", "Suvicha", "Phromwat", "Wichit", "Thammarak", "Sirikul", "Khemanit", "Sukprasert",
+    "Phongtham", "Boonchuay", "Suwannachot", "Anong", "Boonma", "Prasert", "Thongsai", "Pattanakorn", "Phatcharaporn", "Khomsan",
+    "Chalermchai", "Thanasit", "Phattharaphon", "Charoen", "Suriyachat", "Thammarat", "Phanuphong", "Phromphong", "Suthasinee", "Ratanapong",
+    "Wichian", "Pimsuwan", "Nopporn", "Chaiyut", "Wattanachai", "Sutthiwat", "Thongchai", "Nirundorn", "Yingyong", "Surasak",
+    "Chatchai", "Suphachai", "Thongthip", "Boonserm", "Thawanrat", "Prasertsri", "Narin", "Kittipong", "Thongsuk", "Somboon"
+];
+
+
+
+    function guardar() {
+        var contenidoSQL = document.getElementById("resultado").innerHTML; // Obtener el contenido SQL generado
+        contenidoSQL = contenidoSQL.replace(/<br\s*\/?>/gi, '\n'); // Reemplazar <br> con \n
+        var nombreArchivo = "script_sql"; // Nombre del archivo sin la extensión .sql
+        var blob = new Blob([contenidoSQL], { type: 'text/sql' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = nombreArchivo + '.sql'; 
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+    
+
+    function generar() {
+    var valoresSQL = [];
+    for (let index = 0; index < 20000; index++) {
+        var formattedIndex = String(index).padStart(5, '0');
+        var matricula = `'211${formattedIndex}'`;
+        var apellido1 = `'${apellidosFranceses[Math.floor(Math.random() * apellidosFranceses.length)]}'`;
+        var apellido2 = `'${apellidosJaponeses[Math.floor(Math.random() * apellidosJaponeses.length)]}'`;
+        var nombre1 = `'${nombresMexicanos[Math.floor(Math.random() * nombresMexicanos.length)]}'`;
+        var correo = `'A${formattedIndex}@uthermosillo.com.mx'`;
+        
+        // Concatenar los valores en un solo string
+        var valores = `(${matricula}, ${apellido1}, ${apellido2}, ${nombre1}, ${correo})`;
+        valoresSQL.push(valores);
+    }
+
+    // Generar la salida SQL en formato HTML
+    var salida = `
+        CREATE DATABASE IF NOT EXIST sistema_escolar; 
+        USE sistema_escolar;
+        CREATE TABLE IF NOT EXIST alumnos(matricula int UNIQUE, apellido1 VARCHAR(255) NOT NULL, apellido2 VARCHAR(255), nombres VARCHAR(255) NOT NULL, correo VARCHAR(255) NOT NULL UNIQUE);
+        INSERT INTO alumnos(matricula, apellido1, apellido2, nombres, correo) VALUES<br>
+        ${valoresSQL.join(",<br>")};
+    `;
+
+    document.getElementById("resultado").innerHTML = salida;
+}
+
+
+</script>
+
+<body>
+    <input type="button" value="Generar" onclick="generar()">   
+    <input type="button" value="Guardar SQL" onclick="guardar()">   
+    <p id="resultado"></p>
+
+
+   
+</body>
+</html>
